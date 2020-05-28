@@ -10,6 +10,7 @@
 Description: Move line(linear motion)
 """
 
+import math
 import os
 import sys
 import time
@@ -48,17 +49,20 @@ arm.reset(wait=True)
 
 Z_GROUND = 91.05
 
-arm.set_position(x=300, y=-50, z=Z_GROUND, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
-print(arm.get_position(), arm.get_position(is_radian=False))
-arm.set_position(x=300, y=50, z=Z_GROUND, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
-print(arm.get_position(), arm.get_position(is_radian=False))
-arm.set_position(x=400, y=50, z=Z_GROUND, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
-print(arm.get_position(), arm.get_position(is_radian=False))
-arm.set_position(x=400, y=-50, z=Z_GROUND, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
-print(arm.get_position(), arm.get_position(is_radian=False))
-arm.set_position(x=300, y=-50, z=Z_GROUND, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
-print(arm.get_position(), arm.get_position(is_radian=False))
-arm.set_position(x=300, y=-50, z=Z_GROUND+10, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
+N = 15
+X_STAR = []
+Y_STAR = []
+
+for i in range(N):
+    X_STAR.append(350+90*math.cos(i*2*math.pi/N))
+    Y_STAR.append(90*math.sin(i*2*math.pi/N))
+
+for i in range(N+1):
+    idx = (i*(N//2)) % N
+    arm.set_position(x=X_STAR[idx], y=Y_STAR[idx], z=Z_GROUND, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
+    print(arm.get_position(), arm.get_position(is_radian=False))
+
+arm.set_position(x=X_STAR[idx], y=Y_STAR[idx], z=Z_GROUND+10, roll=-180, pitch=0, yaw=0, speed=100, is_radian=False, wait=True)
 print(arm.get_position(), arm.get_position(is_radian=False))
 
 arm.reset(wait=True)
